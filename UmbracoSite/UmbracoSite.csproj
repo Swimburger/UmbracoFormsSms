@@ -1,12 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>4c548a44-be6e-494a-9337-c812c5574a7f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Twilio.AspNet.Core" Version="6.0.0" />
     <PackageReference Include="Umbraco.Cms" Version="10.2.1" />
+    <PackageReference Include="Umbraco.Forms" Version="10.1.2" />
+    <PackageReference Include="Umbraco.Forms.Core" Version="10.1.2" />
   </ItemGroup>
 
   <ItemGroup>
