@@ -27,7 +27,7 @@ public class SmsWorkflow : WorkflowType
 
     public SmsWorkflow(
         ILogger<SmsWorkflow> logger, 
-        IServiceScopeFactory serviceScopeFactory,
+        IServiceScopeFactory serviceScopeFactory
     )
     {
         this.logger = logger;
