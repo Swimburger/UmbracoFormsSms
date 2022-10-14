@@ -7,7 +7,7 @@ using Umbraco.Forms.Core.Enums;
 
 namespace UmbracoSite;
 
-public class SmsWorkflow : WorkflowType
+public class MessageWorkflow : WorkflowType
 {
     private readonly IServiceScopeFactory serviceScopeFactory;
 
@@ -23,7 +23,7 @@ public class SmsWorkflow : WorkflowType
     [Setting("Media URL", Description = "URL of the media file to sent as an MMS.", View = "TextField")]
     public string MediaUrl { get; set; }
 
-    public SmsWorkflow(IServiceScopeFactory serviceScopeFactory)
+    public MessageWorkflow(IServiceScopeFactory serviceScopeFactory)
     {
         this.serviceScopeFactory = serviceScopeFactory;
 

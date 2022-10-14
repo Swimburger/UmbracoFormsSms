@@ -10,6 +10,6 @@ public class SmsComposer : IComposer
     {
         builder.Services.AddTwilioClient();
         builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
-            .Add<SmsWorkflow>();
+            .Add<MessageWorkflow>();
     }
 }
