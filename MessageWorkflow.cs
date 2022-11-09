@@ -11,7 +11,7 @@ public class MessageWorkflow : WorkflowType
 {
     private readonly IServiceScopeFactory serviceScopeFactory;
 
-    [Setting("From", Description = "The Twilio Phone Number the message is sent from.", View = "DropdownList")]
+    [Setting("From", Description = "The Twilio Phone Number the message is sent from.", View = "TextField")]
     public string FromPhoneNumber { get; set; }
 
     [Setting("To", Description = "The phone number the message is sent to.", View = "TextField")]
@@ -27,56 +27,48 @@ public class MessageWorkflow : WorkflowType
     {
         this.serviceScopeFactory = serviceScopeFactory;
 
-        this.Id = new Guid("9e44e413-afa0-4a1e-a40d-7d10e7c7f2b5");
-        this.Name = "SMS";
-        this.Description = "This workflow will send an SMS or MMS.";
-        this.Icon = "icon-chat-active";
-        this.Group = "Communication";
+        Id = new Guid("9e44e413-afa0-4a1e-a40d-7d10e7c7f2b5");
+        Name = "Message";
+        Description = "This workflow will send an SMS or MMS.";
+        Icon = "icon-chat-active";
+        Group = "Communication";
     }
+    
+public override Dictionary<string, Setting> Settings()
+{
+    var settings = base.Settings();
 
-    public override Dictionary<string, Setting> Settings()
-    {
-        var settings = base.Settings();
-
-        using (var scope = serviceScopeFactory.CreateScope())
-        {
-            var twilioClient = scope.ServiceProvider.GetRequiredService<ITwilioRestClient>();
-            var incomingPhoneNumbers = IncomingPhoneNumberResource.Read(client: twilioClient);
-            var preValues = string.Join(",", incomingPhoneNumbers.Select(p => p.PhoneNumber.ToString()));
-            settings[nameof(FromPhoneNumber)].PreValues = preValues;
-        }
-        return settings;
-    }
+    using var scope = serviceScopeFactory.CreateScope();
+    var twilioClient = scope.ServiceProvider.GetRequiredService<ITwilioRestClient>();
+    var incomingPhoneNumbers = IncomingPhoneNumberResource.Read(client: twilioClient);
+    var preValues = string.Join(",", incomingPhoneNumbers.Select(p => p.PhoneNumber.ToString()));
+    settings[nameof(FromPhoneNumber)].PreValues = preValues;
+    return settings;
+}
 
     public override WorkflowExecutionStatus Execute(WorkflowExecutionContext context)
     {
-        using (var scope = serviceScopeFactory.CreateScope())
+        using var scope = serviceScopeFactory.CreateScope();
+        var twilioClient = scope.ServiceProvider.GetRequiredService<ITwilioRestClient>();
+        var messageOptions = new CreateMessageOptions(to: new PhoneNumber(ToPhoneNumber))
         {
-            var twilioClient = scope.ServiceProvider.GetRequiredService<ITwilioRestClient>();
-            var messageOptions = new CreateMessageOptions(to: new PhoneNumber(ToPhoneNumber))
-            {
-                From = new PhoneNumber(FromPhoneNumber)
-            };
+            From = new PhoneNumber(FromPhoneNumber)
+        };
 
-            if (string.IsNullOrEmpty(MessageBody) == false)
-            {
-                messageOptions.Body = MessageBody;
-            }
-
-            if (string.IsNullOrEmpty(MediaUrl) == false)
-            {
-                messageOptions.MediaUrl = new List<Uri> {new Uri(MediaUrl)};
-            }
-
-            MessageResource.Create(messageOptions, client: twilioClient);
+        if (string.IsNullOrEmpty(MessageBody) == false)
+        {
+            messageOptions.Body = MessageBody;
         }
 
-        context.Record.State = FormState.Approved;
+        if (string.IsNullOrEmpty(MediaUrl) == false)
+        {
+            messageOptions.MediaUrl = new List<Uri> {new(MediaUrl)};
+        }
+
+        MessageResource.Create(messageOptions, client: twilioClient);
+
         return WorkflowExecutionStatus.Completed;
     }
 
-    public override List<Exception> ValidateSettings()
-    {
-        return new List<Exception>();
-    }
+    public override List<Exception> ValidateSettings() => new List<Exception>();
 }

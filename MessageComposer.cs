@@ -4,7 +4,7 @@ using Umbraco.Forms.Core.Providers;
 
 namespace UmbracoSite;
 
-public class SmsComposer : IComposer
+public class MessageComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder)
     {
