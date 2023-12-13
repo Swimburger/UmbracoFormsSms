@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Twilio.AspNet.Core" Version="6.0.0" />
-    <PackageReference Include="Umbraco.Cms" Version="10.2.1" />
+    <PackageReference Include="Umbraco.Cms" Version="10.8.1" />
     <PackageReference Include="Umbraco.Forms" Version="10.1.2" />
     <PackageReference Include="Umbraco.Forms.Core" Version="10.1.2" />
   </ItemGroup>
